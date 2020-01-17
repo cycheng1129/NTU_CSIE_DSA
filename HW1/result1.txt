@@ -1,0 +1,15 @@
+testcase: input1.txt
+prog1:
+7
+12
+12
+6
+4
+4
+prog2:
+7
+12
+12
+6
+4
+4
