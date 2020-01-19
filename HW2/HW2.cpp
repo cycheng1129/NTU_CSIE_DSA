@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstring>
 using namespace std;
-const int MAX = 2*10^5;
+const int MAX = 2e5;
 const int ALPHABET = 26; // There are 26 alphabets
 
 struct node{
@@ -18,7 +18,6 @@ struct node{
 int main(int argc, const char * argv[]){
     ios_base::sync_with_stdio(false);
     cin.tie(0);
-
     // build the tree nodes
     int n, l;
     char c;
@@ -26,7 +25,6 @@ int main(int argc, const char * argv[]){
     node *num[MAX];
     num[0] = new node(0);
     for (int i = 1; i <= n; i++){
-        cerr << "HERE" << i << endl;
         cin >> l >> c;
         c -= 'a';
         if (num[l] -> child[c])
