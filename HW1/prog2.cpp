@@ -19,7 +19,7 @@ int main(int argc, const char * argv[]) {
         binaryInsert(dq, 0, dq.size() - 1, k);
         remove.push_back(k);
         if (i >= window - 1){
-            cout << dq[kth - 1] << endl;
+            cout << dq[kth - 1] << '\n';
             prev = remove[0];
             remove.pop_front();
             dq.erase(dq.begin() + binarySearch(dq, 0, dq.size() - 1, prev));
