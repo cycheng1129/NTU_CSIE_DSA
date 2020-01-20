@@ -50,14 +50,14 @@ int main(int argc, const char * argv[]){
         }
         while (N1 != NULL){
             if (N1 == N2){
-                cout << N1 -> depth << endl;
+                cout << N1 -> depth << '\n';
                 break;
             }
             N1 = N1 -> parent;
             N2 = N2 -> parent;
         }
         if (N1 == NULL)
-            cout << 0 << endl;
+            cout << 0 << '\n';
     }
 
     return 0;
