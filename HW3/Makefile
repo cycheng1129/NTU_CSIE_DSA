@@ -21,4 +21,4 @@ $(RESULT_LIST): result%.txt: input%.txt HW3
 	diff output$*.answer.txt output$*.HW3.txt || echo "wrong answer" >> $@
 
 clean:
-	rm -f output*.HW3.txt tmp*.txt $(PROG_LIST) $(RESULT_LIST)
+	rm -f output*.HW3.txt $(PROG_LIST) $(RESULT_LIST)

@@ -37,8 +37,7 @@ int main(int argc, const char * argv[]){
     start();
     remainCard[0] = remainCard[1] = (1LL << n) - 1;
     int ans = dfs(0, -1, -scoreSum(0), scoreSum(1));
-    cerr << "====================" << '\n';
-    cerr << (ans > 0 ? "Alice":"Bob") << '\n' << ans << '\n';
+    cout << (ans > 0 ? "Alice\n":"Bob\n") << abs(ans) << '\n';
     
     return 0;
 }
@@ -76,14 +75,14 @@ int scoreSum(int player){
 }
 
 void start(){
+    string str;
     for (int i = 0; i < 2; i++){
         originalCard[i].resize(n);
         for (int j = 0; j < n; j++){
-            string str;
             cin >> str;
             originalCard[i][j] = cardToInt(str);
         }
-    }
+    }     
 }
 
 long long status(int player, int prevCard, int alpha, int beta){
@@ -100,20 +99,21 @@ long long status(int player, int prevCard, int alpha, int beta){
 
 int dfs(int player, int prevCard, int alpha, int beta){
     long long currStatus = status(player, prevCard, alpha, beta);
-    bool pass = true;
-    int nextMaxMin; // the max or min score from next round
-    int ans;
-
-    // reach the leaf node, the opponent wins
-    if (!remainCard[!player])
-        return - scoreSum(0) + scoreSum(1);
     
     // if the status is the same as previous, return that score 
     // directly without calculating again
     if (statusMap.find(currStatus) != statusMap.end()){
-        cerr << "REPEAT!!!" << '\n';
+        //cerr << "REPEAT! -> SKIP!" << '\n';
         return statusMap[currStatus];
     }
+
+    bool pass = true;
+    int nextMaxMin; // the max or min score from next card choice
+    int ans;
+
+    // reach the leaf node, the opponent wins
+    if (!remainCard[!player])
+        return   scoreSum(1)- scoreSum(0);
 
     // Depth Search First starts here!!!
     for (int i = 0; i < n; i++){
@@ -122,41 +122,45 @@ int dfs(int player, int prevCard, int alpha, int beta){
             ||  (prevCard / 13 == originalCard[player][i] / 13)
             ||  (prevCard % 13 == originalCard[player][i] % 13)))
         {
-            cerr << "Next: " << originalCard[player][i] << '\n';
+            //cerr << "Next: " << originalCard[player][i] << '\n';
             pass = false;
             remainCard[player] ^= (1LL << i);
-            cerr << player << " " << originalCard[player][i] << " " << alpha << " " << beta << '\n';
+            //cerr << player << " " << originalCard[player][i]; 
+            //cerr << " " << alpha << " " << beta << '\n';
+            //cerr << "STATUS: " << currStatus << '\n';
             nextMaxMin = dfs(!player, originalCard[player][i], alpha, beta);
-            // after reaching the leaf, go back to another decision, thus the card exists again
+            //cerr << "Score = " << nextMaxMin << '\n';;
+            // after reaching the leaf, go back to another decision, 
+            // thus the card exists again
             remainCard[player] ^= (1LL << i);
         
             // max layer (player == 0: Alice)
             if (!player){
-                cerr << "====================" << '\n';
-                cerr << "Last card: " << originalCard[player][i] << '\n';
-                cerr << "MAX Layer" << '\n';
-                if (max(alpha, nextMaxMin) > beta)
+                // cerr << "====================" << '\n';
+                // cerr << "Last card: " << originalCard[player][i] << '\n';
+                // cerr << "MAX Layer" << '\n'; 
+                // ans (max) in this layer = beta min of previous layer
+                alpha = ans = max(alpha, nextMaxMin);
+                // cerr << "NEW alpha: " << ans << '\n';
+                if (alpha >= beta)
                     break;
-                ans = alpha = max(alpha, nextMaxMin);
-                cerr << "NEW alpha: " << ans << '\n';
             }
             // min layer (player == 1: Bob)
             else{
-                cerr << "====================" << '\n';
-                cerr << "Last card: " << originalCard[player][i] << '\n';
-                cerr << "MIN Layer" << '\n';
-                if (alpha > min(beta, nextMaxMin))
+                // cerr << "====================" << '\n';
+                // cerr << "Last card: " << originalCard[player][i] << '\n';
+                // cerr << "MIN Layer" << '\n';
+                beta = ans = min(beta, nextMaxMin);
+                // cerr << "NEW beta: " << ans << '\n';
+                if (alpha >= beta)
                     break;
-                ans = beta = min(beta, nextMaxMin);
-                cerr << "NEW beta: " << ans << '\n';
             }
         }
     }
-    if (pass){
+    if (pass)
         ans = dfs(!player, -1, alpha, beta);    
-    }
+    
     statusMap[currStatus] = ans;
-    //cerr << "STATUS: " << currStatus << '\n';
 
     return ans;
 }
